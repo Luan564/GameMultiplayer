@@ -36,11 +36,8 @@ public class Point {
         xP = x*Math.cos(angle)-y*Math.sin(angle);
         yP = x*Math.sin(angle)+y*Math.cos(angle);
         x=xP;
-        x=yP;
+        y=yP;
     }
-    
-    //public void setPoint(Point p){
-    //    this = p;
-    //}
+
         
 }

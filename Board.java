@@ -21,7 +21,7 @@ public class Board extends JPanel implements ActionListener, KeyListener{
     }
 
     public Board(){
-        ship = new Ship(1,1);
+        ship = new Ship(200,200);
        
         Timer t = new Timer(80, this);{
         t.start();
@@ -48,64 +48,78 @@ public class Board extends JPanel implements ActionListener, KeyListener{
         super.paintComponent(g);
         
         //Draw nave
-        Point p=new Point (3,2);
-        p.rotate(Math.PI/2);
-        
-       
         ArrayList<Point>points = new ArrayList<Point>();
-        points.add(new Point (50,50));
-        points.add(new Point (35,80));
-        points.add(new Point (65,80));
+        points.add(new Point (10,0));
+        points.add(new Point (-15,-10));
+        points.add(new Point (-15,10));
+        
 
         Polygon nave = new Polygon();
-        int i;
+    
 
-        for(i = 0 ; i < points.size() ; i++){ 
-            points.get(i).rotate(ship.getAngle()*Math.PI/180);
-            //System.out.print(i+":" +points.get(i).getX());
-            //System.out.print(","+ points.get(i).getY()); 
+        for(int i = 0 ; i < points.size() ; i++){ 
+        //System.out.println(ship.getAngle());
+        points.get(i).rotate(ship.getAngle()*Math.PI/180);
+                   
         }
-        for(i = 0 ; i < points.size() ; i++){
-            nave.addPoint((int)points.get(i).getX(), ship.getY()+(int)points.get(i).getY());
+
+        for(int i = 0 ; i < points.size() ; i++){
+            System.out.println("Ship.getX()"+ship.getX());
+            System.out.println("Ship.getY()"+ship.getY());
+            nave.addPoint(ship.getX()+(int)points.get(i).getX(), ship.getY()+(int)points.get(i).getY());
            
         }
         g.setColor(Color.GREEN);
         g.fillPolygon(nave);
-
-       
-
         
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //Change Dir
-        int yDir = ship.getY();
-        double angle = ship.getAngle();
-        switch(ship.getDir()){
-            case Ship.UP:
-            yDir--;
-            break;
-            case Ship.DOWN:
-            yDir++;
-            break;
-            case Ship.LEFT:
-            angle--;
-            break;
-            case Ship.RIGHT:
-            angle++;
-            break;
-        }
-        ship.setY(yDir);
-        ship.setAngle(angle);
-
-                
-        repaint();
+        
         
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+       
+
+        //Change Dir
+        double yDir = ship.getY();
+        double xDir = ship.getX();
+        double angle = ship.getAngle();
+        switch(ship.getDir()){
+            case Ship.UP:
+            xDir+=(Math.cos((angle)));
+            System.out.println(xDir);
+            yDir+=(Math.sin((angle)));
+            System.out.println(yDir);
+            break;
+
+
+
+            case Ship.DOWN:
+            yDir+=4;
+            break;
+            case Ship.LEFT:
+            xDir-=4;
+            break;
+            case Ship.RIGHT:
+            xDir+=4;
+            break;
+            case Ship.ROTATE_LEFT:
+            angle-=7;
+            break;
+            case Ship.ROTATE_RIGHT:
+            angle+=7;
+            break;
+        }
+        ship.setY((int)yDir);
+        ship.setX((int)xDir);
+        ship.setAngle(angle);
+
+                
+        repaint();
     }
 
     @Override
@@ -125,8 +139,15 @@ public class Board extends JPanel implements ActionListener, KeyListener{
             case KeyEvent.VK_D:
             ship.setDir(Ship.RIGHT);
             break;
+            case KeyEvent.VK_J:
+            ship.setDir(Ship.ROTATE_LEFT);
+            break;
+            case KeyEvent.VK_L:
+            ship.setDir(Ship.ROTATE_RIGHT);
+            break;
         }        
     }
+    
 
     @Override
     public void keyReleased(KeyEvent e) {
