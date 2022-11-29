@@ -13,7 +13,14 @@ import javax.swing.plaf.DimensionUIResource;
 
 
 public class Board extends JPanel implements ActionListener, KeyListener{
-    Ship ship;
+    public static final int UP =0, DOWN = 1, LEFT = 2, RIGHT = 3, ROTATE_RIGHT = 4, ROTATE_LEFT = 5; 
+    ArrayList<Point>points=new ArrayList<>();
+    Point p2;
+    int dir;
+    double angle2;
+    
+    
+
     
     public static void main(String args[]){
         Board b = new Board();
@@ -21,14 +28,14 @@ public class Board extends JPanel implements ActionListener, KeyListener{
     }
 
     public Board(){
-        ship = new Ship(200,200);
-       
+        double angle=Math.PI/2;
+        Point p=new Point(0,0);
+        
         Timer t = new Timer(80, this);{
         t.start();
         }
         setPreferredSize(new DimensionUIResource(Config.SIZE_WIN_W, Config.SIZE_WIN_H));
         setBackground(Color.GRAY);
-
         JFrame window = new JFrame("Multiplayer");
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);    
         window.setSize(Config.SIZE_WIN_W, Config.SIZE_WIN_H);      
@@ -37,89 +44,106 @@ public class Board extends JPanel implements ActionListener, KeyListener{
         window.pack();                                
         window.setResizable(false);          
         window.setLocationRelativeTo(null);         
-        window.setVisible(true);       
+        window.setVisible(true);  
+        
+       Ship navecita = new Ship(Config.X_SHIP, Config.Y_SHIP, Config.COLOR_SHIP, Config.ANGLE);
+       p2 = p;
+       angle2=angle;
+       for (int i=0; i<500; i++){
+        navecita.setAngle(angle);
+        navecita.setP(p);
+        navecita.print();
+        this.setPoints(navecita.getPointsTranlate());
+        angle=+angle2; 
+        p.setX(p2.getX());
+        p.setY(p2.getY());
+            try{
+
+                Thread.sleep(100);
+
+            }catch (InterruptedException e) {
+
+            
+
+            }  
+        //System.out.println("x"+p.getX());
+        //System.out.println("Ship.x"+navecita.getP().getX());
+        //System.out.println("y"+p.getY());
+        //System.out.println("Ship.y"+navecita.getP().getY());
+        //System.out.println(i); 
+        i=0; 
+        
+        }
 
         
         window.add(this);
     }
-
+    
+   
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        
-        //Draw nave
-        ArrayList<Point>points = new ArrayList<Point>();
-        points.add(new Point (10,0));
-        points.add(new Point (-15,-10));
-        points.add(new Point (-15,10));
-        
-
+        g.setColor(Color.red);
         Polygon nave = new Polygon();
-    
-
-        for(int i = 0 ; i < points.size() ; i++){ 
-        //System.out.println(ship.getAngle());
-        points.get(i).rotate(ship.getAngle()*Math.PI/180);
-                   
-        }
-
         for(int i = 0 ; i < points.size() ; i++){
-            System.out.println("Ship.getX()"+ship.getX());
-            System.out.println("Ship.getY()"+ship.getY());
-            nave.addPoint(ship.getX()+(int)points.get(i).getX(), ship.getY()+(int)points.get(i).getY());
+             nave.addPoint((int)Math.round(points.get(i).getX()),(int)Math.round(points.get(i).getY()));
+             repaint();
+             
            
         }
-        g.setColor(Color.GREEN);
         g.fillPolygon(nave);
         
     }
+    public void setPoints(ArrayList<Point>points){
+        this.points=points;
+    }
+    public int getDir() {
+        return dir;
+    }
+    public void setDir(int dir) {
+        this.dir = dir;
+    }
+    
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+
         
         
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-       
-
-        //Change Dir
-        double yDir = ship.getY();
-        double xDir = ship.getX();
-        double angle = ship.getAngle();
-        switch(ship.getDir()){
-            case Ship.UP:
-            xDir+=(Math.cos((angle)));
-            System.out.println(xDir);
-            yDir+=(Math.sin((angle)));
-            System.out.println(yDir);
+        double xP = p2.getX();
+        double yP = p2.getY();
+        double angle = angle2;
+        switch(dir){
+            case UP:
+            yP = yP-4;
+            break;
+            case DOWN:
+            yP = yP+4;
+            break;
+            case RIGHT:
+            xP = xP-4;
+            break;
+            case LEFT:
+            xP = xP+4;
+            break;
+            case ROTATE_LEFT:
+            angle=angle-0.1;
+            break;
+            case ROTATE_RIGHT:
+            angle=angle+0.1;
             break;
 
-
-
-            case Ship.DOWN:
-            yDir+=4;
-            break;
-            case Ship.LEFT:
-            xDir-=4;
-            break;
-            case Ship.RIGHT:
-            xDir+=4;
-            break;
-            case Ship.ROTATE_LEFT:
-            angle-=7;
-            break;
-            case Ship.ROTATE_RIGHT:
-            angle+=7;
-            break;
         }
-        ship.setY((int)yDir);
-        ship.setX((int)xDir);
-        ship.setAngle(angle);
+        p2.setX(xP);
+        p2.setY(yP);
+        angle2 = angle;
 
-                
-        repaint();
+        
     }
 
     @Override
@@ -128,22 +152,22 @@ public class Board extends JPanel implements ActionListener, KeyListener{
         int codeKey = e.getKeyCode();
         switch(codeKey){
             case KeyEvent.VK_W:
-            ship.setDir(Ship.UP);
+            dir = UP;
             break;
             case KeyEvent.VK_S:
-            ship.setDir(Ship.DOWN);
+            dir = DOWN;
             break;
             case KeyEvent.VK_A:
-            ship.setDir(Ship.LEFT);
+            dir = RIGHT;
             break;
             case KeyEvent.VK_D:
-            ship.setDir(Ship.RIGHT);
+            dir = LEFT;
             break;
             case KeyEvent.VK_J:
-            ship.setDir(Ship.ROTATE_LEFT);
+            dir = ROTATE_LEFT;
             break;
             case KeyEvent.VK_L:
-            ship.setDir(Ship.ROTATE_RIGHT);
+            dir = ROTATE_RIGHT;
             break;
         }        
     }

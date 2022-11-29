@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 public class Config {
                 //Final es una constante que no va a cambiar su valor
     public static final int SIZE_WIN_H = 500;
@@ -9,6 +11,10 @@ public class Config {
     public static final int HEAD = 0;
     public static final int P_LEFT = 1;
     public static final int P_RIGHT = 2;
+    public static final int X_SHIP = 200;
+    public static final int Y_SHIP = 200;
+    public static final Color COLOR_SHIP = Color.GREEN;
+    public static final double ANGLE = 0;
 
 
 
