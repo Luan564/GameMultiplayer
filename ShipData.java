@@ -1,22 +1,20 @@
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Ship {
+public class ShipData implements Serializable{
     //Atributos
     private ArrayList<Point>points = new ArrayList<Point>();
     private ArrayList<Point>pointsTranlate = new ArrayList<Point>();
     private Color color;
     private double angle;
     private double x, y;
-    private int dir;
     private Point p;
-    public static final int UP =0, DOWN = 1, LEFT = 2, RIGHT = 3, ROTATE_RIGHT = 4, ROTATE_LEFT = 5; 
-
      
 
     
 
-    public Ship(int x, int y, Color color, double angle){
+    public ShipData(int x, int y, Color color, double angle){
         this.p=p;
         this.color=color;
         points.add(new Point (10,0));

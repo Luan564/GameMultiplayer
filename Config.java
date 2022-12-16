@@ -15,6 +15,7 @@ public class Config {
     public static final int Y_SHIP = 200;
     public static final Color COLOR_SHIP = Color.GREEN;
     public static final double ANGLE = 0;
+    public static final double SPEED_BULLET = 1;
 
 
 

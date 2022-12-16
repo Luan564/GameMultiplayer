@@ -13,9 +13,10 @@ import javax.swing.plaf.DimensionUIResource;
 
 
 public class Board extends JPanel implements ActionListener, KeyListener{
-    public static final int UP =0, DOWN = 1, LEFT = 2, RIGHT = 3, ROTATE_RIGHT = 4, ROTATE_LEFT = 5; 
+    public static final int UP =0, DOWN = 1, LEFT = 2, RIGHT = 3, ROTATE_RIGHT = 4, ROTATE_LEFT = 5, SHOOT = 6; 
     ArrayList<Point>points=new ArrayList<>();
     Point p2;
+    boolean shoot;
     int dir;
     double angle2;
     
@@ -46,10 +47,19 @@ public class Board extends JPanel implements ActionListener, KeyListener{
         window.setLocationRelativeTo(null);         
         window.setVisible(true);  
         
-       Ship navecita = new Ship(Config.X_SHIP, Config.Y_SHIP, Config.COLOR_SHIP, Config.ANGLE);
+        Bullet bala = new Bullet(angle, new Point(Config.X_SHIP, Config.Y_SHIP));
+        ShipData navecita = new ShipData(Config.X_SHIP, Config.Y_SHIP, Config.COLOR_SHIP, Config.ANGLE);
+
        p2 = p;
        angle2=angle;
        for (int i=0; i<500; i++){
+        
+        if(bala.getEnable() == shoot){
+            bala.setAngle(angle);
+            bala.setPos(p2);
+            bala.updateLocation();
+        }
+
         navecita.setAngle(angle);
         navecita.setP(p);
         navecita.print();
@@ -67,9 +77,9 @@ public class Board extends JPanel implements ActionListener, KeyListener{
 
             }  
         //System.out.println("x"+p.getX());
-        //System.out.println("Ship.x"+navecita.getP().getX());
+        //System.out.println("ShipData.x"+navecita.getP().getX());
         //System.out.println("y"+p.getY());
-        //System.out.println("Ship.y"+navecita.getP().getY());
+        //System.out.println("ShipData.y"+navecita.getP().getY());
         //System.out.println(i); 
         i=0; 
         
@@ -118,6 +128,7 @@ public class Board extends JPanel implements ActionListener, KeyListener{
         double xP = p2.getX();
         double yP = p2.getY();
         double angle = angle2;
+        boolean shootAct = false;
         switch(dir){
             case UP:
             yP = yP-4;
@@ -137,11 +148,16 @@ public class Board extends JPanel implements ActionListener, KeyListener{
             case ROTATE_RIGHT:
             angle=angle+0.1;
             break;
+            case SHOOT:
+            shootAct = true;
+            break;
 
         }
         p2.setX(xP);
         p2.setY(yP);
         angle2 = angle;
+        shoot = shootAct;
+
 
         
     }
@@ -168,6 +184,9 @@ public class Board extends JPanel implements ActionListener, KeyListener{
             break;
             case KeyEvent.VK_L:
             dir = ROTATE_RIGHT;
+            break;
+            case KeyEvent.VK_SPACE:
+            dir = SHOOT;
             break;
         }        
     }
